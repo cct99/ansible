@@ -2,6 +2,8 @@
 # Please consider joining the pool (https://www.pool.ntp.org/join.html).
 pool 2.centos.pool.ntp.org iburst
 
+pool {{ ntp_pool }} iburst
+
 # Use NTP servers from DHCP.
 sourcedir /run/chrony-dhcp
 

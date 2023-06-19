@@ -1,0 +1,70 @@
+---
+# tasks file for elk
+
+- name: Update crypto policies
+  become: true
+  command: update-crypto-policies --set DEFAULT:SHA1
+
+- name: Import Elasticsearch GPG Key
+  rpm_key:
+    key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+- name: Install Java
+  yum:
+    name: java-1.8.0-openjdk
+    state: installed
+
+- name: Create Kibana repository configuration
+  template:
+    src: templates/kibana.repo.j2
+    dest: /etc/yum.repos.d/kibana.repo
+
+- name: Create Logstash repository configuration
+  template:
+    src: templates/logstash.repo.j2
+    dest: /etc/yum.repos.d/logstash.repo
+
+- name: Create Elasticsearch repository configuration
+  template:
+    src: templates/elasticsearch.repo.j2
+    dest: /etc/yum.repos.d/elasticsearch.repo
+
+- name: Install Elasticsearch
+  yum:
+    name: elasticsearch
+    state: installed
+    enablerepo: elasticsearch
+
+- name: Start Elasticsearch service
+  service:
+    name: elasticsearch
+    state: started
+    enabled: true
+
+- name: Install Logstash
+  yum:
+    name: logstash
+    state: installed
+
+- name: Start Logstash service
+  service:
+    name: logstash
+    state: started
+    enabled: true
+
+- name: Install Kibana
+  yum: 
+    name: kibana
+    state: installed
+
+- name: Configure Kibana
+  template:
+    src: templates/kibana.yml.j2
+    dest: /etc/kibana/kibana.yml
+
+- name: Start Kibana service
+  service:
+    name: kibana
+    state: started
+    enabled: true
+    

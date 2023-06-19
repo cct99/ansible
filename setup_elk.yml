@@ -1,0 +1,9 @@
+---
+
+- name: A playbook to install and start ELK
+  hosts: webservers
+
+  roles:
+    - elk
+...
+
